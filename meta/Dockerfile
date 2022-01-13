@@ -3,8 +3,6 @@ FROM node:12.16-alpine
 # Get argument from docker-compose-prod.yaml
 # ARG SELECTED_BRANCH=main
 
-WORKDIR /archipelago
-
 RUN node -v
 RUN npm -v
 
@@ -16,13 +14,19 @@ RUN yarn global add pm2
 # If we don't do that, Docker may skip the git clone command
 ADD https://api.github.com/repos/assemblee-virtuelle/archipelago/git/refs/heads/$SELECTED_BRANCH ../git-version.json
 
-RUN git clone https://github.com/assemblee-virtuelle/archipelago.git /archipelago
+RUN git clone https://github.com/assemblee-virtuelle/archipelago /semapps_clone
 
+WORKDIR /semapps_clone
 RUN git checkout $SELECTED_BRANCH
 
-ADD ./ecosystem.config.js /archipelago/middleware
-ADD app /archipelago/middleware
-WORKDIR /archipelago/middleware
+# Move selected dir to root /app directory
+RUN mv ./middleware /app
+
+# We can now remove the clone
+WORKDIR /app
+
+ADD ./ecosystem.config.js /app
+ADD ./app /app
 
 RUN yarn install
 
