@@ -1,0 +1,81 @@
+version: '3.5'
+services:
+  traefik:
+    image: traefik:v2.3
+    container_name: traefik
+    networks:
+      - semapps
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=yannickduthe@hotmail.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - ./letsencrypt:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  fuseki:
+    build:
+      context: ./fuseki
+    container_name: fuseki
+    networks:
+      - semapps
+    restart: always
+    volumes:
+      - ./fuseki/rdf_data:/fuseki
+    ports:
+      - "3030:3030"
+    expose:
+      - "3030"
+    environment:
+      ADMIN_PASSWORD: "admin"
+
+  meta:
+    build:
+      context: meta
+      args:
+        - SELECTED_BRANCH=master
+    container_name: meta
+    networks:
+      - semapps
+    restart: always
+    depends_on:
+      - fuseki
+    volumes:
+      - ./meta/logs:/app/logs
+      - ./meta/actors:/app/actors
+      - ./meta/uploads:/app/uploads
+      - ./meta/jwt:/app/jwt
+    expose:
+      - "3000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.meta.rule=Host(`data.meta.flod.io`)"
+      - "traefik.http.routers.meta.entrypoints=websecure"
+      - "traefik.http.routers.meta.tls.certresolver=myresolver"
+
+  redis:
+    image: redis
+    container_name: redis
+    networks:
+      - semapps
+    volumes:
+      - ./redis/data:/data
+    expose:
+      - "6379"
+    command: ["redis-server", "--appendonly", "yes"]
+
+networks:
+  semapps:
+    name: semapps_network

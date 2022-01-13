@@ -1,0 +1,35 @@
+version: '3.5'
+services:
+
+  fuseki:
+    build:
+      context: ./fuseki
+    container_name: fuseki
+    restart: always
+    volumes:
+      - ./fuseki/rdf_data:/fuseki
+    ports:
+      - "3030:3030"
+    expose:
+      - "3030"
+    environment:
+      ADMIN_PASSWORD: "admin"
+
+  meta:
+    build:
+      context: meta
+      args:
+        - SELECTED_BRANCH=master
+    container_name: meta
+    restart: always
+    depends_on:
+      - fuseki
+    volumes:
+      - ./meta/logs:/app/logs
+      - ./meta/actors:/app/actors
+      - ./meta/uploads:/app/uploads
+      - ./meta/jwt:/app/jwt
+    ports:
+      - "3003:3003"
+    expose:
+      - "3003"
