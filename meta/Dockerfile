@@ -1,7 +1,7 @@
 FROM node:12.16-alpine
 
-# Default arguments
-ARG SELECTED_BRANCH=master
+# Get argument from docker-compose-prod.yaml
+# ARG SELECTED_BRANCH=main
 
 WORKDIR /archipelago
 

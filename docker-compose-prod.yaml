@@ -45,7 +45,7 @@ services:
     build:
       context: meta
       args:
-        - SELECTED_BRANCH=master
+        - SELECTED_BRANCH=main
     container_name: meta
     networks:
       - semapps
