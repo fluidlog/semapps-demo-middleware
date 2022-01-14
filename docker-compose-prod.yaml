@@ -61,7 +61,7 @@ services:
       - "3000"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.meta.rule=Host(`data.meta.flod.io`)"
+      - "traefik.http.routers.meta.rule=Host(`data.meta.assemblee-virtuelle.org`)"
       - "traefik.http.routers.meta.entrypoints=websecure"
       - "traefik.http.routers.meta.tls.certresolver=myresolver"
 
