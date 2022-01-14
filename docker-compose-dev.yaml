@@ -30,6 +30,15 @@ services:
       - ./meta/uploads:/app/uploads
       - ./meta/jwt:/app/jwt
     ports:
-      - "3003:3003"
+      - "3000:3000"
     expose:
-      - "3003"
+      - "3000"
+
+  redis:
+    image: redis
+    container_name: redis
+    volumes:
+      - ./redis/data:/data
+    expose:
+      - "6379"
+    command: ["redis-server", "--appendonly", "yes"]
