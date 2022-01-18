@@ -45,7 +45,7 @@ services:
     build:
       context: meta
       args:
-        - SELECTED_BRANCH=main
+        - SELECTED_BRANCH=master
     container_name: meta
     networks:
       - semapps
@@ -53,10 +53,10 @@ services:
     depends_on:
       - fuseki
     volumes:
-      - ./meta/logs:/app/logs
-      - ./meta/actors:/app/actors
-      - ./meta/uploads:/app/uploads
-      - ./meta/jwt:/app/jwt
+      - ./meta/logs:/archipelago/middleware/logs
+      - ./meta/actors:/archipelago/middleware/actors
+      - ./meta/uploads:/archipelago/middleware/uploads
+      - ./meta/jwt:/archipelago/middleware/jwt
     expose:
       - "3000"
     labels:
