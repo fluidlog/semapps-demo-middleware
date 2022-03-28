@@ -65,6 +65,30 @@ services:
       - "traefik.http.routers.middleware-meta.entrypoints=websecure"
       - "traefik.http.routers.middleware-meta.tls.certresolver=myresolver"
 
+  middleware-glocal:
+    build:
+      context: middleware-glocal
+      args:
+        - SELECTED_BRANCH=master
+    container_name: middleware-glocal
+    networks:
+      - semapps
+    restart: always
+    depends_on:
+      - fuseki
+    volumes:
+      - ./meta/logs:/archipelago/middleware/logs
+      - ./meta/actors:/archipelago/middleware/actors
+      - ./meta/uploads:/archipelago/middleware/uploads
+      - ./meta/jwt:/archipelago/middleware/jwt
+    expose:
+      - "3001"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.middleware-glocal.rule=Host(`data.gl.assemblee-virtuelle.org`)"
+      - "traefik.http.routers.middleware-glocal.entrypoints=websecure"
+      - "traefik.http.routers.middleware-glocal.tls.certresolver=myresolver"
+
   frontend-meta:
     build:
       context: ./frontend-meta
@@ -80,6 +104,22 @@ services:
       - "traefik.http.routers.frontend-meta.rule=Host(`semapps.meta.assemblee-virtuelle.org`)"
       - "traefik.http.routers.frontend-meta.entrypoints=websecure"
       - "traefik.http.routers.frontend-meta.tls.certresolver=myresolver"
+
+  frontend-glocal:
+    build:
+      context: ./frontend-glocal
+      args:
+        - SELECTED_BRANCH=master
+    container_name: frontend-glocal
+    ports:
+      - "5001:5001"
+    expose:
+      - "5001"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend-glocal.rule=Host(`semapps.gl.assemblee-virtuelle.org`)"
+      - "traefik.http.routers.frontend-glocal.entrypoints=websecure"
+      - "traefik.http.routers.frontend-glocal.tls.certresolver=myresolver"
 
   redis:
     image: redis
