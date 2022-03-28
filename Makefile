@@ -36,10 +36,10 @@ docker-restart:
 	$(DOCKER_COMPOSE) up -d --force-recreate
 
 log:
-	$(DOCKER_COMPOSE) logs -f fuseki meta
+	$(DOCKER_COMPOSE) logs -f fuseki middleware-meta middleware-glocal
 
 log-prod:
-	$(DOCKER_COMPOSE_PROD) logs -f fuseki meta
+	$(DOCKER_COMPOSE_PROD) logs -f fuseki middleware-meta middleware-glocal
 
 start: docker-start
 
