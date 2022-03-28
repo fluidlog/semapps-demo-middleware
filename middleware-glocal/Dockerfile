@@ -25,6 +25,6 @@ WORKDIR /archipelago/middleware
 
 RUN yarn install
 
-EXPOSE 3001
+EXPOSE 3000
 
 CMD [ "pm2-runtime", "ecosystem.config.js" ]

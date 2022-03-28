@@ -82,7 +82,7 @@ services:
       - ./meta/uploads:/archipelago/middleware/uploads
       - ./meta/jwt:/archipelago/middleware/jwt
     expose:
-      - "3001"
+      - "3000"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.middleware-glocal.rule=Host(`data.gl.assemblee-virtuelle.org`)"
