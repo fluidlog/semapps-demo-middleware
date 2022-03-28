@@ -41,12 +41,12 @@ services:
     environment:
       ADMIN_PASSWORD: "admin"
 
-  meta:
+  middleware-meta:
     build:
-      context: meta
+      context: middleware-meta
       args:
         - SELECTED_BRANCH=master
-    container_name: meta
+    container_name: middleware-meta
     networks:
       - semapps
     restart: always
@@ -61,9 +61,25 @@ services:
       - "3000"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.meta.rule=Host(`data.meta.assemblee-virtuelle.org`)"
-      - "traefik.http.routers.meta.entrypoints=websecure"
-      - "traefik.http.routers.meta.tls.certresolver=myresolver"
+      - "traefik.http.routers.middleware-meta.rule=Host(`data.meta.assemblee-virtuelle.org`)"
+      - "traefik.http.routers.middleware-meta.entrypoints=websecure"
+      - "traefik.http.routers.middleware-meta.tls.certresolver=myresolver"
+
+  frontend-meta:
+    build:
+      context: ./frontend-meta
+      args:
+        - SELECTED_BRANCH=master
+    container_name: frontend-meta
+    ports:
+      - "5000:5000"
+    expose:
+      - "5000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend-meta.rule=Host(`semapps.meta.assemblee-virtuelle.org`)"
+      - "traefik.http.routers.frontend-meta.entrypoints=websecure"
+      - "traefik.http.routers.frontend-meta.tls.certresolver=myresolver"
 
   redis:
     image: redis
