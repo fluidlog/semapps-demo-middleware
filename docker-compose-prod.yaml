@@ -112,9 +112,9 @@ services:
         - SELECTED_BRANCH=master
     container_name: frontend-glocal
     ports:
-      - "5001:5001"
+      - "5000:5000"
     expose:
-      - "5001"
+      - "5000"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend-glocal.rule=Host(`semapps.gl.assemblee-virtuelle.org`)"

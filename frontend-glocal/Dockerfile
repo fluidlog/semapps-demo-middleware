@@ -26,6 +26,6 @@ WORKDIR /archipelago/frontend
 RUN yarn install
 RUN yarn build
 
-EXPOSE 5001
+EXPOSE 5000
 
 CMD serve -s build -l 5001
