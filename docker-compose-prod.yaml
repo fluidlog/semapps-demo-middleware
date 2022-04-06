@@ -112,7 +112,7 @@ services:
         - SELECTED_BRANCH=master
     container_name: frontend-glocal
     ports:
-      - "5000:5000"
+      - "5001:5001"
     expose:
       - "5001"
     labels:
