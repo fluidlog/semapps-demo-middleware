@@ -114,7 +114,7 @@ services:
     ports:
       - "5000:5000"
     expose:
-      - "5000"
+      - "5001"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.frontend-glocal.rule=Host(`semapps.gl.assemblee-virtuelle.org`)"
