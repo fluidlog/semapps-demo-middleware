@@ -1,7 +1,7 @@
 version: '3.5'
 services:
   traefik:
-    image: traefik:v2.3
+    image: traefik:v2.6.3
     container_name: traefik
     networks:
       - semapps
@@ -20,7 +20,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "8080:8080"
     volumes:
       - ./letsencrypt:/letsencrypt
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -95,8 +94,6 @@ services:
       args:
         - SELECTED_BRANCH=master
     container_name: frontend-meta
-    ports:
-      - "5000:5000"
     expose:
       - "5000"
     labels:
@@ -111,8 +108,6 @@ services:
       args:
         - SELECTED_BRANCH=master
     container_name: frontend-glocal
-    ports:
-      - "5001:5001"
     expose:
       - "5001"
     labels:
