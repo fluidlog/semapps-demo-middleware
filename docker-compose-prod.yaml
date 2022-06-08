@@ -3,8 +3,6 @@ services:
   traefik:
     image: traefik:v2.6.3
     container_name: traefik
-    networks:
-      - semapps
     command:
       - "--api.insecure=true"
       - "--providers.docker=true"
@@ -28,8 +26,6 @@ services:
     build:
       context: ./fuseki
     container_name: fuseki
-    networks:
-      - semapps
     restart: always
     volumes:
       - ./fuseki/rdf_data:/fuseki
@@ -46,8 +42,6 @@ services:
       args:
         - SELECTED_BRANCH=master
     container_name: middleware-meta
-    networks:
-      - semapps
     restart: always
     depends_on:
       - fuseki
@@ -70,8 +64,6 @@ services:
       args:
         - SELECTED_BRANCH=master
     container_name: middleware-glocal
-    networks:
-      - semapps
     restart: always
     depends_on:
       - fuseki
@@ -119,14 +111,8 @@ services:
   redis:
     image: redis
     container_name: redis
-    networks:
-      - semapps
     volumes:
       - ./redis/data:/data
     expose:
       - "6379"
     command: ["redis-server", "--appendonly", "yes"]
-
-networks:
-  semapps:
-    name: semapps_network
