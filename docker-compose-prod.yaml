@@ -46,10 +46,10 @@ services:
     depends_on:
       - fuseki
     volumes:
-      - ./meta/logs:/archipelago/middleware/logs
-      - ./meta/actors:/archipelago/middleware/actors
-      - ./meta/uploads:/archipelago/middleware/uploads
-      - ./meta/jwt:/archipelago/middleware/jwt
+      - ./middleware-meta/logs:/archipelago/middleware/logs
+      - ./middleware-meta/actors:/archipelago/middleware/actors
+      - ./middleware-meta/uploads:/archipelago/middleware/uploads
+      - ./middleware-meta/jwt:/archipelago/middleware/jwt
     expose:
       - "3000"
     labels:
@@ -68,10 +68,10 @@ services:
     depends_on:
       - fuseki
     volumes:
-      - ./meta/logs:/archipelago/middleware/logs
-      - ./meta/actors:/archipelago/middleware/actors
-      - ./meta/uploads:/archipelago/middleware/uploads
-      - ./meta/jwt:/archipelago/middleware/jwt
+      - ./middleware-glocal/logs:/archipelago/middleware/logs
+      - ./middleware-glocal/actors:/archipelago/middleware/actors
+      - ./middleware-glocal/uploads:/archipelago/middleware/uploads
+      - ./middleware-glocal/jwt:/archipelago/middleware/jwt
     expose:
       - "3000"
     labels:
