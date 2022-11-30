@@ -1,4 +1,4 @@
-FROM node:12.16-alpine
+FROM node:16.3.0-alpine
 
 # Default arguments
 ARG SELECTED_BRANCH=master
@@ -8,7 +8,7 @@ WORKDIR /archipelago
 RUN node -v
 RUN npm -v
 
-RUN apk add --update --no-cache autoconf bash libtool automake python alpine-sdk openssh-keygen yarn nano
+RUN apk add --update --no-cache autoconf bash libtool automake python2 alpine-sdk openssh-keygen yarn nano
 
 RUN yarn global add pm2
 
