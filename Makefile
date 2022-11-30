@@ -39,7 +39,7 @@ log:
 	$(DOCKER_COMPOSE) logs -f fuseki middleware-meta middleware-glocal
 
 log-prod:
-	$(DOCKER_COMPOSE_PROD) logs -f fuseki middleware-meta middleware-glocal
+	$(DOCKER_COMPOSE_PROD) logs -f fuseki middleware-meta middleware-glocal frontend-meta frontend-glocal
 
 start: docker-start
 

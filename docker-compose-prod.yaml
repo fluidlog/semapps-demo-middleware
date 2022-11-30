@@ -39,8 +39,6 @@ services:
   middleware-meta:
     build:
       context: middleware-meta
-      args:
-        - SELECTED_BRANCH=master
     container_name: middleware-meta
     restart: always
     depends_on:
@@ -61,8 +59,6 @@ services:
   middleware-glocal:
     build:
       context: middleware-glocal
-      args:
-        - SELECTED_BRANCH=master
     container_name: middleware-glocal
     restart: always
     depends_on:
@@ -83,8 +79,6 @@ services:
   frontend-meta:
     build:
       context: ./frontend-meta
-      args:
-        - SELECTED_BRANCH=master
     container_name: frontend-meta
     expose:
       - "5000"
@@ -97,8 +91,6 @@ services:
   frontend-glocal:
     build:
       context: ./frontend-glocal
-      args:
-        - SELECTED_BRANCH=master
     container_name: frontend-glocal
     expose:
       - "5001"
