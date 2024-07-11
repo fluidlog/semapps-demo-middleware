@@ -36,25 +36,25 @@ services:
     environment:
       ADMIN_PASSWORD: "admin"
 
-  middleware-meta:
-    build:
-      context: middleware-meta
-    container_name: middleware-meta
-    restart: always
-    depends_on:
-      - fuseki
-    volumes:
-      - ./middleware-meta/logs:/archipelago/middleware/logs
-      - ./middleware-meta/actors:/archipelago/middleware/actors
-      - ./middleware-meta/uploads:/archipelago/middleware/uploads
-      - ./middleware-meta/jwt:/archipelago/middleware/jwt
-    expose:
-      - "3000"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.middleware-meta.rule=Host(`data.meta.assemblee-virtuelle.org`)"
-      - "traefik.http.routers.middleware-meta.entrypoints=websecure"
-      - "traefik.http.routers.middleware-meta.tls.certresolver=myresolver"
+  # middleware-meta:
+  #   build:
+  #     context: middleware-meta
+  #   container_name: middleware-meta
+  #   restart: always
+  #   depends_on:
+  #     - fuseki
+  #   volumes:
+  #     - ./middleware-meta/logs:/archipelago/middleware/logs
+  #     - ./middleware-meta/actors:/archipelago/middleware/actors
+  #     - ./middleware-meta/uploads:/archipelago/middleware/uploads
+  #     - ./middleware-meta/jwt:/archipelago/middleware/jwt
+  #   expose:
+  #     - "3000"
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.middleware-meta.rule=Host(`data.meta.assemblee-virtuelle.org`)"
+  #     - "traefik.http.routers.middleware-meta.entrypoints=websecure"
+  #     - "traefik.http.routers.middleware-meta.tls.certresolver=myresolver"
 
   middleware-glocal:
     build:
@@ -76,17 +76,17 @@ services:
       - "traefik.http.routers.middleware-glocal.entrypoints=websecure"
       - "traefik.http.routers.middleware-glocal.tls.certresolver=myresolver"
 
-  frontend-meta:
-    build:
-      context: ./frontend-meta
-    container_name: frontend-meta
-    expose:
-      - "5000"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.frontend-meta.rule=Host(`semapps.meta.assemblee-virtuelle.org`)"
-      - "traefik.http.routers.frontend-meta.entrypoints=websecure"
-      - "traefik.http.routers.frontend-meta.tls.certresolver=myresolver"
+  # frontend-meta:
+  #   build:
+  #     context: ./frontend-meta
+  #   container_name: frontend-meta
+  #   expose:
+  #     - "5000"
+  #   labels:
+  #     - "traefik.enable=true"
+  #     - "traefik.http.routers.frontend-meta.rule=Host(`semapps.meta.assemblee-virtuelle.org`)"
+  #     - "traefik.http.routers.frontend-meta.entrypoints=websecure"
+  #     - "traefik.http.routers.frontend-meta.tls.certresolver=myresolver"
 
   frontend-glocal:
     build:
