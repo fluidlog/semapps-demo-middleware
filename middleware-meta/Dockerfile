@@ -8,7 +8,7 @@ WORKDIR /archipelago
 RUN node -v
 RUN npm -v
 
-RUN apk add --update --no-cache autoconf bash libtool automake python2 alpine-sdk openssh-keygen yarn nano
+RUN apk add --update --no-cache autoconf bash libtool automake python3 alpine-sdk openssh-keygen yarn nano
 
 RUN yarn global add pm2
 
