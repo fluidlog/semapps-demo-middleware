@@ -1,0 +1,14 @@
+/data
+/keycloak
+/middleware
+.vscode
+
+.env.local
+.env.prod
+
+.DS_STORE
+
+/dev
+/addOn/frontend/public/env.js
+
+.idea

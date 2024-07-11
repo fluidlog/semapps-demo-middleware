@@ -1,0 +1,29 @@
+FROM node:20-alpine
+
+# Can be a branch name or a tag
+ARG SELECTED_BRANCH=v2.0.0
+
+# Leave empty if based on a tag or latest commit of the branch
+ARG SELECTED_COMMIT=
+
+WORKDIR /archipelago
+
+RUN apk add --update --no-cache bash alpine-sdk openssh-keygen nano
+RUN yarn global add serve nodemon
+
+RUN git clone --branch=${SELECTED_BRANCH} https://github.com/assemblee-virtuelle/archipelago.git /archipelago
+RUN if [[ -n "$SELECTED_COMMIT" ]]; then git reset --hard ${SELECTED_COMMIT}; fi
+
+WORKDIR /archipelago/frontend
+
+RUN yarn install --frozen-lockfile
+
+COPY ./env.sh .
+COPY ./addOn/frontend/ .
+
+RUN yarn install --frozen-lockfile
+RUN yarn build
+
+EXPOSE 4000
+
+CMD sh -c "(. ./env.sh dist) && serve -s dist -l 4000"

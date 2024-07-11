@@ -1,0 +1,22 @@
+version: '3.5'
+
+### DOCKER COMPOSE DEV (extends LOCAL > extends BASE) ###
+#
+# Here, we change the CMD directive to make it work in development mode with hot-reload.
+#
+
+services:
+  middleware:
+    volumes:
+      - ./addOn/middleware:/archipelago/middleware/addOn
+    command: bash -c "pm2-runtime 'yarn run dev' & nodemon --watch ./addOn -x \"cp -r ./addOn/* .\""
+
+  frontend:
+    build:
+      dockerfile: ./Dockerfile.frontend.dev
+    image: transiscope-nantes/frontend-dev
+    volumes:
+      - ./addOn/frontend:/archipelago/frontend/addOn
+    command: bash -c "yarn dev --host & nodemon --watch ./addOn --ext js,jsx,ts,tsx,html -x \"cp -r ./addOn/* . && (. ./env.sh public)\""
+    ports:
+      - '5173:5173'

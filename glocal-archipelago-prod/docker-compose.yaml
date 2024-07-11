@@ -1,0 +1,116 @@
+version: '3.5'
+services:
+  traefik:
+    image: "traefik:v2.3"
+    networks:
+      - semapps
+    command:
+      # - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=yannickduthe@hotmail.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./data/letsencrypt:/letsencrypt"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  fuseki:
+    image: semapps/jena-fuseki-webacl
+    container_name: fuseki
+    volumes:
+      - ./data/fuseki:/fuseki
+      - ./data/staging:/staging
+    ports:
+      - "3030:3030"
+    networks:
+      - semapps
+    environment:
+      ADMIN_PASSWORD: "admin"
+
+  fuseki_compact:
+    image: semapps/jena-fuseki-webacl:latest
+    entrypoint: /docker-compact-entrypoint.sh
+    profiles: 
+      - compact
+    volumes:
+      - ./data/fuseki:/fuseki
+
+  middleware:
+    build:
+      context: ../deploy-archipelago-glocal
+      dockerfile: Dockerfile.middleware
+    depends_on:
+      - fuseki
+      - redis
+    volumes:
+      - ./middleware/logs:/archipelago/middleware/logs
+      - ./middleware/jwt:/archipelago/middleware/jwt
+      - ./middleware/uploads:/archipelago/middleware/uploads
+      - ../deploy-archipelago-glocal/addOn:/archipelago/middleware/addOn
+      - ./data/fuseki/databases/localData:/localData
+    environment:
+      - SEMAPPS_SPARQL_ENDPOINT=http://fuseki:3030/
+      - SEMAPPS_MAIN_DATASET=localData
+      - SEMAPPS_JENA_USER=admin
+      - SEMAPPS_JENA_PASSWORD=admin
+      - SEMAPPS_HOME_URL=https://data.gl.assemblee-virtuelle.org/
+      - SEMAPPS_OIDC_ISSUER=https://login.lescommuns.org/auth/realms/master/
+      - SEMAPPS_OIDC_CLIENT_ID=semapps
+      - SEMAPPS_REDIS_CACHE_URL=redis://redis:6379/0
+      - SEMAPPS_FRONT_URL=https://semapps.gl.assemblee-virtuelle.org/
+    networks:
+      - semapps
+    expose:
+        - "3000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.middleware.rule=Host(`data.gl.assemblee-virtuelle.org`)"
+      - "traefik.http.routers.middleware.entrypoints=websecure"
+      - "traefik.http.routers.middleware.tls.certresolver=myresolver"
+
+  frontend:
+    build:
+      context: ../deploy-archipelago-glocal
+      dockerfile: Dockerfile.frontend
+    environment:
+      - VITE_MIDDLEWARE_URL=https://data.gl.assemblee-virtuelle.org/
+      - VITE_MAPBOX_ACCESS_TOKEN=pk.eyJ1IjoiZmxvZGlvIiwiYSI6ImNrenF1Mnd2aDBwMHUzMWxnd2NhczRydDUifQ.K7zR6u7P3BaSZy4TsfzK9w
+      - PORT=4000
+    volumes:
+      - ../deploy-archipelago-glocal/addOn:/archipelago/frontend/addOn
+    networks:
+      - semapps
+    expose:
+      - "4000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.frontend.rule=Host(`semapps.gl.assemblee-virtuelle.org`)"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls.certresolver=myresolver"
+
+  redis:
+    image: redis
+    container_name: redis
+    networks:
+      - semapps
+    expose:
+      - "6379"
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis_data:/data
+    command: ["redis-server", "--appendonly", "yes"]
+
+networks:
+  semapps:
+    name: semapps_network
