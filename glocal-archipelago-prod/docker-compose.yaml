@@ -105,8 +105,6 @@ services:
       - semapps
     expose:
       - "6379"
-    ports:
-      - "6379:6379"
     volumes:
       - ./data/redis_data:/data
     command: ["redis-server", "--appendonly", "yes"]
